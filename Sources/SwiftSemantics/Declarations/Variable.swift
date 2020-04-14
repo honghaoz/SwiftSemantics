@@ -75,14 +75,22 @@ extension Variable: ExpressibleBySyntax {
         name = node.pattern.description.trimmed
         typeAnnotation = node.typeAnnotation?.type.description.trimmed
         initializedValue = node.initializer?.value.description.trimmed
-        accessors = Accessor.accessors(from: node.accessor?.as(AccessorBlockSyntax.self))
+        accessors = Accessor.accessors(from: node.accessor)
     }
 }
 
 extension Variable.Accessor: ExpressibleBySyntax {
-    public static func accessors(from node: AccessorBlockSyntax?) -> [Variable.Accessor] {
+
+    public static func accessors(from node: Syntax?) -> [Variable.Accessor] {
         guard let node = node else { return [] }
-        return node.accessors.compactMap { Variable.Accessor($0) }
+
+        if let accessorNode = node.as(AccessorBlockSyntax.self) {
+            return accessorNode.accessors.compactMap { Variable.Accessor($0) }
+        } else if let _ = node.as(CodeBlockSyntax.self) {
+            return [Variable.Accessor(attributes: [], modifier: nil, kind: .get)]
+        } else {
+            return []
+        }
     }
 
     public init?(_ node: AccessorDeclSyntax) {
