@@ -2,6 +2,10 @@ import SwiftSyntax
 
 /// An enumeration declaration.
 public struct Enumeration: Declaration, Hashable, Codable {
+    
+    /// The declaration's container
+    public let context: String?
+
     /// The enumeration declaration attributes.
     public let attributes: [Attribute]
 
@@ -63,6 +67,9 @@ public struct Enumeration: Declaration, Hashable, Codable {
 
     /// An enumeration case.
     public struct Case: Declaration, Hashable, Codable {
+
+        public let context: String?
+        
         /// The declaration attributes.
         public let attributes: [Attribute]
 
@@ -120,6 +127,7 @@ extension Enumeration.Case: CustomStringConvertible {
 extension Enumeration: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: EnumDeclSyntax) {
+        context = node.ancestorsName
         attributes = node.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.enumKeyword.text.trimmed
@@ -131,6 +139,7 @@ extension Enumeration: ExpressibleBySyntax {
 }
 
 extension Enumeration.Case {
+
     /// Creates and returns enumeration cases from an enumeration case declaration.
     public static func cases(from node: EnumCaseDeclSyntax) -> [Enumeration.Case] {
         return node.elements.compactMap { Enumeration.Case($0) }
@@ -143,6 +152,7 @@ extension Enumeration.Case {
             return nil
         }
 
+        context = parent.ancestorsName
         attributes = parent.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         modifiers = parent.modifiers?.map { Modifier($0) } ?? []
         keyword = parent.caseKeyword.text.trimmed

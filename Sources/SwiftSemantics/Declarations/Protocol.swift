@@ -2,6 +2,10 @@ import SwiftSyntax
 
 /// A protocol declaration.
 public struct Protocol: Declaration, Hashable, Codable {
+
+    /// The declaration's container
+    public let context: String?
+
     /// The declaration attributes.
     public let attributes: [Attribute]
 
@@ -34,6 +38,7 @@ public struct Protocol: Declaration, Hashable, Codable {
 extension Protocol: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: ProtocolDeclSyntax) {
+        context = node.ancestorsName
         attributes = node.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.protocolKeyword.text.trimmed

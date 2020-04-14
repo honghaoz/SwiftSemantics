@@ -2,6 +2,10 @@ import SwiftSyntax
 
 /// A function declaration.
 public struct Function: Declaration, Hashable, Codable {
+
+    /// The declaration's container
+    public let context: String?
+
     /// The declaration attributes.
     public let attributes: [Attribute]
 
@@ -148,6 +152,7 @@ public struct Function: Declaration, Hashable, Codable {
 extension Function: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: FunctionDeclSyntax) {
+        context = node.ancestorsName
         attributes = node.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.funcKeyword.text.trimmed

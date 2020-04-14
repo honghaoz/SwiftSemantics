@@ -2,6 +2,7 @@ import SwiftSyntax
 
 /// An extension declaration.
 public struct Extension: Declaration, Hashable, Codable {
+    
     /// The declaration attributes.
     public let attributes: [Attribute]
 

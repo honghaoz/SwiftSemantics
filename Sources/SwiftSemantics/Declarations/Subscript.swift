@@ -2,6 +2,7 @@ import SwiftSyntax
 
 /// A subscript declaration.
 public struct Subscript: Declaration, Hashable, Codable {
+
     /// The declaration attributes.
     public let attributes: [Attribute]
 

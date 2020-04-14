@@ -2,6 +2,10 @@ import SwiftSyntax
 
 /// A declaration for a property or a top-level variable or constant.
 public struct Variable: Declaration, Hashable, Codable {
+
+    /// The declaration's container
+    public let context: String?
+
     /// The declaration attributes.
     public let attributes: [Attribute]
 
@@ -64,6 +68,7 @@ extension Variable: ExpressibleBySyntax {
             return nil
         }
 
+        context = parent.ancestors.compactMap { $0.name }.reversed().joined(separator: ".").nonEmpty
         attributes = parent.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         modifiers = parent.modifiers?.map { Modifier($0) } ?? []
         keyword = parent.letOrVarKeyword.text.trimmed
