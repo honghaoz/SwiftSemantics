@@ -63,7 +63,7 @@ extension Subscript: ExpressibleBySyntax {
         genericParameters = node.genericParameterClause?.genericParameterList.map { GenericParameter($0) } ?? []
         returnType = node.result.returnType.description.trimmed
         genericRequirements = GenericRequirement.genericRequirements(from: node.genericWhereClause?.requirementList)
-        accessors = Variable.Accessor.accessors(from: node.accessor?.as(AccessorBlockSyntax.self))
+        accessors = Variable.Accessor.accessors(from: node.accessor)
     }
 }
 
